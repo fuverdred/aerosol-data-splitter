@@ -5,6 +5,13 @@ pd.options.mode.chained_assignment = None  # default='warn'
 DROP_COLS = ['homeid', 'nodetype', 'nodename']
 
 def get_events(events_file, date):
+    '''
+    Events must be in a specifc format eg.
+        17:17:30	pulsed_humidifier
+        17:42:57	pulsed_humidifier
+        18:18:52	pulsed_humidifier
+    Currently the name of the event is ignored.
+    '''
     with open(events_file) as f:
         events = [row.split() for row in f.read().split('\n')]
     return [pd.to_datetime(' '.join((date, time[0]))) for time in events]
@@ -46,8 +53,7 @@ def split_data(raw_filename, output_folder, event_file=None):
                     mask = (mini_df['timestamp']>start) & (mini_df['timestamp']<end)
                     event_df = mini_df[mask]
                     # Add time in seconds, zero'd at the start
-                    time_s = (event_df['timestamp'] - min(event_df['timestamp'])).astype(int) // 1E9
-                    event_df['time_s'] = time_s
+                    time_s = (event_df['timestamp'] - min(event_df['timestamp'])).dt.total_seconds()                    event_df['time_s'] = time_s
                     event_df.to_csv(output_folder + filename +
                                     "_event:{:d}".format(i) + ".csv")
             else:
@@ -55,8 +61,6 @@ def split_data(raw_filename, output_folder, event_file=None):
 
 
 class Exit(Exception): pass
-
-
 while 1:
     try:
         print("Enter the file to be split")
