@@ -40,7 +40,7 @@ def split_data(raw_filename, output_folder, event_file=None):
 
     for node in sorted(df['nodeid'].unique()):
         for sensorname in sorted(df['sensorname'].unique()):
-            filename = "/nodeid:{:d}_sensorname:{:s}".format(node, sensorname)
+            filename = "/nodeid={:d}_sensorname={:s}".format(node, sensorname)
             print("Writing ", filename)
 
             mask = (df['nodeid'] == node) & (df['sensorname'] == sensorname)
@@ -53,8 +53,9 @@ def split_data(raw_filename, output_folder, event_file=None):
                     mask = (mini_df['timestamp']>start) & (mini_df['timestamp']<end)
                     event_df = mini_df[mask]
                     # Add time in seconds, zero'd at the start
-                    time_s = (event_df['timestamp'] - min(event_df['timestamp'])).dt.total_seconds()                    event_df['time_s'] = time_s
-                    event_df.to_csv(output_folder + filename + "_event:{:d}".format(i) + ".csv",
+                    time_s = (event_df['timestamp'] - min(event_df['timestamp'])).dt.total_seconds()
+                    event_df['time_s'] = time_s
+                    event_df.to_csv(output_folder + filename + "_event={:d}".format(i) + ".csv",
                                     index=False)
             else:
                 mini_df.to_csv(output_folder + filename + '.csv', index=False)
