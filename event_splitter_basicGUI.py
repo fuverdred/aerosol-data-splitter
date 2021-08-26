@@ -50,7 +50,7 @@ def split_data(raw_filename, output_folder, event_file=None):
             if event_file:
                 for i, event in enumerate(events[:-1], 1):
                     start, end = event, events[i]
-                    mask = (mini_df['timestamp']>start) & (mini_df['timestamp']<end)
+                    mask = (mini_df['timestamp']>=start) & (mini_df['timestamp']<end)
                     event_df = mini_df[mask]
                     # Add time in seconds, zero'd at the start
                     time_s = (event_df['timestamp'] - event).dt.total_seconds()
