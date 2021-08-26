@@ -54,8 +54,8 @@ def split_data(raw_filename, output_folder, event_file=None):
                     event_df = mini_df[mask]
                     # Add time in seconds, zero'd at the start
                     time_s = (event_df['timestamp'] - min(event_df['timestamp'])).dt.total_seconds()                    event_df['time_s'] = time_s
-                    event_df.to_csv(output_folder + filename +
-                                    "_event:{:d}".format(i) + ".csv")
+                    event_df.to_csv(output_folder + filename + "_event:{:d}".format(i) + ".csv",
+                                    index=False)
             else:
                 mini_df.to_csv(output_folder + filename + '.csv', index=False)
 
